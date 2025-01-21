@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Player.h"
 
 //==============================================================================
 /**
@@ -16,6 +17,7 @@
 class AdaptiveMetronomeAudioProcessor  : public juce::AudioProcessor
 {
 public:
+    juce::Array<Player> players;
     //==============================================================================
     AdaptiveMetronomeAudioProcessor();
     ~AdaptiveMetronomeAudioProcessor() override;
@@ -32,6 +34,24 @@ public:
    #endif
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+
+    void UpdatePlayers(juce::Array<Player> newPlayers);
+    void ExportPlayersToCSV();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;

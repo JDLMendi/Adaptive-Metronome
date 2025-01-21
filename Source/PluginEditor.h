@@ -22,6 +22,7 @@ public:
     void updateStatusLabel(const juce::String&);
     PlayerStruct GetPlayerParameters(int);
     void savePlayerParametersToCSV();
+    void UpdateModel();
 
 private:
     AdaptiveMetronomeAudioProcessor& audioProcessor;
@@ -30,7 +31,11 @@ private:
     juce::TextButton loadCongifBtn;
     juce::TextButton resetBtn;
     juce::TextButton oscMessageBtn;
+
+#if JUCE_DEBUG
     juce::TextButton saveToCSVBtn;
+    juce::TextButton loadParamsBtn;
+#endif
 
     juce::ComboBox noPlayerCB;
     juce::Label noPlayerLB;

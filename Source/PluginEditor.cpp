@@ -45,8 +45,6 @@ AdaptiveMetronomeAudioProcessorEditor::AdaptiveMetronomeAudioProcessorEditor(Ada
             alphasAndBetas.updatePlayerSetup(numPlayers);
         };
 
-
-
     addAndMakeVisible(noPlayerLB);
     noPlayerLB.setText("Number of User Players", juce::dontSendNotification);
     noPlayerLB.setFont(juce::Font(25.0f));
@@ -61,15 +59,25 @@ AdaptiveMetronomeAudioProcessorEditor::AdaptiveMetronomeAudioProcessorEditor(Ada
     statusLB.setFont(juce::Font(25.0f));
     statusLB.setText("Status Text Here", juce::dontSendNotification);
 
-    // Add checkbox for saving parameters to CSV only in debug mode
+    // Debug mode
 #if JUCE_DEBUG
+    // Add button for saving parameters to CSV only in 
     addAndMakeVisible(saveToCSVBtn);
     saveToCSVBtn.setButtonText("Save Player Params to CSV");
     saveToCSVBtn.onClick = [this] {
         savePlayerParametersToCSV();
         };
+
+    // Add "Load Parameters" button 
+    addAndMakeVisible(loadParamsBtn);
+    loadParamsBtn.setButtonText("Load Parameters");
+    loadParamsBtn.onClick = [this] {
+        UpdateModel(); // Call the processor's UpdatePlayers() method
+        DBG("Load Parameters button has been pressed. Players updated.");
+        };
 #endif
 
+    
 }
 
 AdaptiveMetronomeAudioProcessorEditor::~AdaptiveMetronomeAudioProcessorEditor() = default;
@@ -130,15 +138,14 @@ void AdaptiveMetronomeAudioProcessorEditor::resized()
 #pragma endregion Setting Position of Status Label
 
 #if JUCE_DEBUG
-#pragma region Save to CSV Checkbox
-    int checkboxWidth = 250;
+#pragma region Save to CSV and Load Paramaters Button
+    int checkboxWidth = 100;
     int checkboxHeight = 30;
     saveToCSVBtn.setBounds(WINDOW_MARGIN, getHeight() - checkboxHeight - WINDOW_MARGIN, checkboxWidth, checkboxHeight);
-#pragma endregion Setting Position of Save to CSV Checkbox
+    loadParamsBtn.setBounds(WINDOW_MARGIN + checkboxWidth + gap, getHeight() - checkboxHeight - WINDOW_MARGIN, checkboxWidth, checkboxHeight);
+#pragma endregion Setting Position of Save to CSV and Load Parameters
 #endif
 }
-
-
 
 void AdaptiveMetronomeAudioProcessorEditor::updateStatusLabel(const juce::String& message)
 {
@@ -172,7 +179,6 @@ PlayerStruct AdaptiveMetronomeAudioProcessorEditor::GetPlayerParameters(int play
 
 void AdaptiveMetronomeAudioProcessorEditor::savePlayerParametersToCSV()
 {
-    // Define the file path for the CSV file (you can change this as needed)
     juce::File file("D:/player_parameters.csv");
 
     // Delete the file if it already exists (recreate it)
@@ -219,3 +225,34 @@ void AdaptiveMetronomeAudioProcessorEditor::savePlayerParametersToCSV()
     }
 
 }
+
+void AdaptiveMetronomeAudioProcessorEditor::UpdateModel()
+{
+    // Create a JUCE array to store Player objects
+    juce::Array<Player> players;
+
+    // Iterate over the number of players selected
+    for (int i = 0; i < 4; ++i)
+    {
+        // Get player parameters from the GUI
+        PlayerStruct playerParams = GetPlayerParameters(i);
+
+        // Create Player object using the parameters
+        Player player(
+            playerParams.id,
+            playerParams.isUser,
+            playerParams.midiChannel,
+            playerParams.volume,
+            playerParams.delay,
+            playerParams.motorNoiseSTD,
+            playerParams.timeKeeperNoiseSTD,
+            { playerParams.alphas[0], playerParams.alphas[1], playerParams.alphas[2], playerParams.alphas[3] },
+            { playerParams.betas[0], playerParams.betas[1], playerParams.betas[2], playerParams.betas[3] }
+        );
+
+        players.add(player);
+        audioProcessor.UpdatePlayers(players);
+    }
+    DBG("All players have been updated.");
+}
+

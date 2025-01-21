@@ -50,6 +50,29 @@ public:
     void setAlphas(const std::array<double, 4>& newAlphas) { alphas = newAlphas; }
     void setBetas(const std::array<double, 4>& newBetas) { betas = newBetas; }
 
+    // Function to return a CSV string of player parameters
+    std::string toCSVString() const
+    {
+        std::ostringstream csvString;
+        csvString << id << ","
+            << isUser << ","
+            << midiChannel << ","
+            << volume << ","
+            << delay << ","
+            << motorNoiseSTD << ","
+            << timeKeeperNoiseSTD << ","
+            << alphas[0] << ","
+            << betas[0] << ","
+            << alphas[1] << ","
+            << betas[1] << ","
+            << alphas[2] << ","
+            << betas[2] << ","
+            << alphas[3] << ","
+            << betas[3];
+        return csvString.str();
+    }
+
+
 private:
     int id;
     bool isUser;

@@ -17,7 +17,7 @@ public:
         // Column labels for "Alphas and Betas"
         const juce::StringArray columnNames = { "1", "2", "3", "4" };
 
-        // Initialize column labels
+        // Initialise column labels
         for (int i = 0; i < columnNames.size(); ++i)
         {
             auto* label = new juce::Label();
@@ -27,7 +27,7 @@ public:
             columnLabels.add(label);
         }
 
-        // Initialize alpha and beta sliders
+        // Initialise alpha and beta sliders
         for (int row = 0; row < 4; ++row)
         {
             for (int col = 0; col < 4; ++col)

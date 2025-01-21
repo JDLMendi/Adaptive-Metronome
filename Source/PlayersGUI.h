@@ -25,7 +25,7 @@ public:
         // Column names excluding "Alpha and Betas"
         const juce::StringArray columnNames = { "Player", "MIDI Channel", "Volume", "Delay\n(ms)", "Motor Noise\nSTD\n(ms)", "Time Keeper \nNoise STD\n(ms)" };
 
-        // Initialize column labels
+        // Initialise column labels
         for (int i = 0; i < columnNames.size(); ++i)
         {
             auto* label = new juce::Label();
@@ -35,7 +35,7 @@ public:
             columnLabels.add(label);
         }
 
-        // Initialize cells
+        // Initialise cells
         for (int row = 0; row < 4; ++row)
         {
             // Player number label
@@ -105,9 +105,8 @@ public:
         int cellHeight = area.getHeight() / 5; // 4 rows + header
         int columnWidth = area.getWidth() / 6;
 
-        // Increase the size of the rotary sliders by 20%
-        int sliderWidth = static_cast<int>(columnWidth * 1.2);  // 20% larger
-        int sliderHeight = static_cast<int>(cellHeight * 0.75 * 1.2);  // 20% larger
+        int sliderWidth = static_cast<int>(columnWidth * 1.2); 
+        int sliderHeight = static_cast<int>(cellHeight * 0.75 * 1.2);
 
         // Position column labels
         for (int i = 0; i < columnLabels.size(); ++i)

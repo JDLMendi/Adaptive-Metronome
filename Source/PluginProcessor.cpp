@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "Player.h"
 
 //==============================================================================
 #pragma region Main Functions
@@ -19,10 +20,15 @@ AdaptiveMetronomeAudioProcessor::AdaptiveMetronomeAudioProcessor()
                        )
 #endif
 {
+    DBG("Processor has been initialised and ready.");
 }
 
 // Destructor
-AdaptiveMetronomeAudioProcessor::~AdaptiveMetronomeAudioProcessor() = default;
+AdaptiveMetronomeAudioProcessor::~AdaptiveMetronomeAudioProcessor() {
+#if JUCE_DEBUG
+    ExportPlayersToCSV();
+#endif
+}
 
 // Called for Audio Playback - Things to be done before audio is played
 void AdaptiveMetronomeAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
@@ -35,6 +41,64 @@ void AdaptiveMetronomeAudioProcessor::processBlock(juce::AudioBuffer<float>& buf
 {
 
 }
+
+// This function is called during prepareToPlay() to update the Player's parameters base on the GUI
+void AdaptiveMetronomeAudioProcessor::UpdatePlayers(juce::Array<Player> newPlayers)
+{
+    players = newPlayers;
+}
+
+// Debug function used to see if players have been successfully stored in the processor for the ensembleModel
+void AdaptiveMetronomeAudioProcessor::ExportPlayersToCSV()
+{
+    juce::File file("D:/players_export.csv");
+
+    // Delete the file if it already exists (recreate it)
+    if (file.existsAsFile())
+    {
+        file.deleteFile(); // Deletes the file
+    }
+
+    // Open the file for writing
+    juce::FileOutputStream outputStream(file);
+    if (outputStream.openedOk())
+    {
+        // Write headers to the CSV file
+        outputStream << "Player ID, Is User, MIDI Channel, Volume, Delay, Motor Noise STD, Time Keeper Noise STD, Alpha 1, Alpha 2, Alpha 3, Alpha 4, Beta 1, Beta 2, Beta 3, Beta 4\n";
+
+        // Iterate through players and write their parameters
+        for (int i = 0; i < players.size(); ++i) // Number of players in the array
+        {
+            Player& player = players[i];
+
+            // Write player parameters to the CSV file
+            outputStream << player.getId() << ","
+                << player.getIsUser() << ","
+                << player.getMidiChannel() << ","
+                << player.getVolume() << ","
+                << player.getDelay() << ","
+                << player.getMotorNoiseSTD() << ","
+                << player.getTimeKeeperNoiseSTD() << ","
+                << player.getAlphas()[0] << ","
+                << player.getAlphas()[1] << ","
+                << player.getAlphas()[2] << ","
+                << player.getAlphas()[3] << ","
+                << player.getBetas()[0] << ","
+                << player.getBetas()[1] << ","
+                << player.getBetas()[2] << ","
+                << player.getBetas()[3] << "\n";
+        }
+
+        DBG("Player parameters have been exported to players_export.csv");
+    }
+    else
+    {
+        DBG("Failed to open CSV file for writing");
+    }
+}
+
+
+
 
 // Called after Audio Playback 
 void AdaptiveMetronomeAudioProcessor::releaseResources()
