@@ -1,6 +1,10 @@
 #pragma once
 
 #include <JuceHeader.h>
+
+#define ALPHA_DEFAULT 0.25
+#define BETA_DEFAULT 0.1
+
 struct PlayerAlphaAndBeta
 {
     double alphas[4]; // Array for alpha values
@@ -124,10 +128,13 @@ public:
                 alphaSliders[sliderIndex]->setBounds(alphaBounds);
                 alphaSliders[sliderIndex]->setColour(juce::Slider::thumbColourId, juce::Colours::red);
                 alphaSliders[sliderIndex]->setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::white);
+                alphaSliders[sliderIndex]->setValue(ALPHA_DEFAULT, juce::NotificationType::dontSendNotification);
+
 
                 betaSliders[sliderIndex]->setBounds(betaBounds);
                 betaSliders[sliderIndex]->setColour(juce::Slider::thumbColourId, juce::Colours::orange);
                 betaSliders[sliderIndex]->setColour(juce::Slider::rotarySliderFillColourId, juce::Colours::white);
+                betaSliders[sliderIndex]->setValue(BETA_DEFAULT, juce::NotificationType::dontSendNotification);
             }
         }
     }

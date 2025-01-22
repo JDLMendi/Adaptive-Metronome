@@ -46,6 +46,7 @@ void AdaptiveMetronomeAudioProcessor::processBlock(juce::AudioBuffer<float>& buf
 void AdaptiveMetronomeAudioProcessor::UpdatePlayers(juce::Array<Player> newPlayers)
 {
     players = newPlayers;
+    DBG("Checking IsUser: " + newPlayers[1].getIsUser());
 }
 
 // Debug function used to see if players have been successfully stored in the processor for the ensembleModel
@@ -87,6 +88,8 @@ void AdaptiveMetronomeAudioProcessor::ExportPlayersToCSV()
                 << player.getBetas()[1] << ","
                 << player.getBetas()[2] << ","
                 << player.getBetas()[3] << "\n";
+
+       
         }
 
         DBG("Player parameters have been exported to players_export.csv");

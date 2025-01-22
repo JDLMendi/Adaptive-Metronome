@@ -62,19 +62,22 @@ public:
 
                 switch (col)
                 {
-                case 2: slider->setRange(0.0, 1.0, 0.01); break;              // Volume
-                case 3: 
+                case 2: // Volume
+                    slider->setRange(0.0, 1.0, 0.01); 
+                    slider->setValue(1.0, juce::dontSendNotification);
+                    break;
+                case 3: // Delay
                     slider->setRange(0.0, 200, 0.5);
                     slider->setColour(juce::Slider::thumbColourId, juce::Colours::seagreen);
-                    break;              // Delay
-                case 4:
+                    break;              
+                case 4: // Motor Noise STD
                     slider->setRange(0.0, 10, 0.01);
                     slider->setColour(juce::Slider::thumbColourId, juce::Colours::seagreen);
-                    break;              // Motor Noise STD
-                case 5: 
+                    break;              
+                case 5: // Time Keeper Noise STD
                     slider->setRange(0.0, 50, 0.01);
                     slider->setColour(juce::Slider::thumbColourId, juce::Colours::seagreen);
-                    break;              // Time Keeper Noise STD
+                    break;              
                 default: break;
                 }
 
