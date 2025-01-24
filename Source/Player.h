@@ -21,7 +21,7 @@ public:
     // Constructor
     Player(int id, bool isUser, int midiChannel, float volume, float delay, float motorNoiseSTD, float timeKeeperNoiseSTD,
         const std::array<double, 4>& alphas, const std::array<double, 4>& betas)
-        : id(id), midiChannel(midiChannel), volume(volume), delay(delay),
+        : id(id), isUser(isUser), midiChannel(midiChannel), volume(volume), delay(delay),
         motorNoiseSTD(motorNoiseSTD), timeKeeperNoiseSTD(timeKeeperNoiseSTD),
         alphas(alphas), betas(betas) {}
 
@@ -53,22 +53,30 @@ public:
     // Function to return a CSV string of player parameters
     std::string toCSVString() const
     {
+        DBG("IsUser: " + isUser);
         std::ostringstream csvString;
-        csvString << id << ","
-            << isUser << ","
-            << midiChannel << ","
-            << volume << ","
-            << delay << ","
-            << motorNoiseSTD << ","
-            << timeKeeperNoiseSTD << ","
-            << alphas[0] << ","
-            << betas[0] << ","
-            << alphas[1] << ","
-            << betas[1] << ","
-            << alphas[2] << ","
-            << betas[2] << ","
-            << alphas[3] << ","
-            << betas[3];
+
+        if (isUser) {
+            csvString << id << "," << isUser << "," << midiChannel << "," << volume << ",,,,,,,,,\n";
+        }
+        else {
+            csvString << id << ","
+                << isUser << ","
+                << midiChannel << ","
+                << volume << ","
+                << delay << ","
+                << motorNoiseSTD << ","
+                << timeKeeperNoiseSTD << ","
+                << alphas[0] << ","
+                << betas[0] << ","
+                << alphas[1] << ","
+                << betas[1] << ","
+                << alphas[2] << ","
+                << betas[2] << ","
+                << alphas[3] << ","
+                << betas[3] << "\n";
+        }
+        
         return csvString.str();
     }
 

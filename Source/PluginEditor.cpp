@@ -89,7 +89,7 @@ void AdaptiveMetronomeAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(juce::Colours::white);
     g.setFont(juce::FontOptions(36.0f));
 
-    g.drawFittedText("Adaptive Metronome V2", getLocalBounds().reduced(WINDOW_MARGIN), juce::Justification::topLeft, 1);
+    g.drawFittedText("Adaptive Metronome", getLocalBounds().reduced(WINDOW_MARGIN), juce::Justification::topLeft, 1);
 }
 
 void AdaptiveMetronomeAudioProcessorEditor::resized()
@@ -192,29 +192,36 @@ void AdaptiveMetronomeAudioProcessorEditor::savePlayerParametersToCSV()
     if (outputStream.openedOk())
     {
         // Write headers to the CSV file
-        outputStream << "Player ID, Is User, MIDI Channel,Volume,Delay,Motor Noise STD,Time Keeper Noise STD,Alpha 1,Alpha 2,Alpha 3,Alpha 4,Beta 1,Beta 2,Beta 3,Beta 4\n";
+        outputStream << "Player ID, Is User, MIDI Channel, Volume, Delay, Motor Noise STD, Time Keeper Noise STD, Alpha 1, Beta 1, Alpha 2, Beta 2, Alpha 3, Beta 3, Alpha 4, Beta 4\n";
 
         // Iterate through players and write their parameters
-        for (int i = 0; i < 4; ++i) // Number of players selected
+        for (int i = 0; i < 4; i++) // Number of players selected
         {
             PlayerStruct player = GetPlayerParameters(i);
-
+            DBG("Checking isUser to Processor: " << player.id);
             // Write player parameters to the CSV file
-            outputStream << player.id << ","
-                << player.isUser << ","
-                << player.midiChannel << ","
-                << player.volume << ","
-                << player.delay << ","
-                << player.motorNoiseSTD << ","
-                << player.timeKeeperNoiseSTD << ","
-                << player.alphas[0] << ","
-                << player.betas[0] << ","
-                << player.alphas[1] << ","
-                << player.betas[1] << ","
-                << player.alphas[2] << ","
-                << player.betas[2] << ","
-                << player.alphas[3] << ","
-                << player.betas[3] << "\n";
+            if (player.isUser) {
+                DBG("MIDI CHANNEL " << player.midiChannel);
+                outputStream << player.id << "," << player.isUser << "," << player.midiChannel << "," << player.volume << ",,,,,,,,,\n";
+            }
+            else {
+                outputStream << player.id << ","
+                    << player.isUser << ","
+                    << player.midiChannel << ","
+                    << player.volume << ","
+                    << player.delay << ","
+                    << player.motorNoiseSTD << ","
+                    << player.timeKeeperNoiseSTD << ","
+                    << player.alphas[0] << ","
+                    << player.betas[0] << ","
+                    << player.alphas[1] << ","
+                    << player.betas[1] << ","
+                    << player.alphas[2] << ","
+                    << player.betas[2] << ","
+                    << player.alphas[3] << ","
+                    << player.betas[3] << "\n";
+            }
+            
         }
 
         DBG("Player parameters have been saved to player_parameters.csv");
@@ -232,11 +239,10 @@ void AdaptiveMetronomeAudioProcessorEditor::UpdateModel()
     juce::Array<Player> players;
 
     // Iterate over the number of players selected
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; i++)
     {
         // Get player parameters from the GUI
         PlayerStruct playerParams = GetPlayerParameters(i);
-
         // Create Player object using the parameters
         Player player(
             playerParams.id,
